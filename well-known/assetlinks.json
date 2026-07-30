@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "dev.pages.dashboard_61o.twa",
+        "sha256_cert_fingerprints": ["66:57:EA:12:15:62:A9:69:0C:94:8A:BC:8C:4E:22:46:20:B6:B7:47:5C:E6:94:AA:74:26:AF:BB:7F:F9:1F:FD"]
+      }
+    }]

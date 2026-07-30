@@ -697,13 +697,13 @@
         }
 
         /* ============================================================
-           CATEGORÍAS — NUEVO DISEÑO MEJORADO
+           CATEGORÍAS — CORREGIDO: DISTRIBUCIÓN HORIZONTAL
            ============================================================ */
         .category-container {
             display: flex;
             flex-direction: column;
             gap: 8px;
-            max-height: 400px;
+            max-height: 420px;
             overflow-y: auto;
             padding: 12px;
             background: var(--bg-input);
@@ -726,6 +726,7 @@
             background: var(--bg-card);
             overflow: hidden;
             transition: var(--transition);
+            flex-shrink: 0;
         }
 
         .cat-group:hover {
@@ -742,6 +743,7 @@
             transition: var(--transition);
             background: var(--bg-card);
             border-bottom: 1px solid transparent;
+            min-height: 44px;
         }
 
         .cat-group-header:hover {
@@ -773,10 +775,18 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            min-width: 0;
         }
 
         .cat-group-title .group-emoji {
             font-size: 15px;
+            flex-shrink: 0;
+        }
+
+        .cat-group-title .group-name {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .cat-group-count {
@@ -787,6 +797,8 @@
             padding: 1px 10px;
             border-radius: 12px;
             border: 1px solid var(--border-color);
+            flex-shrink: 0;
+            margin-left: auto;
         }
 
         .cat-group-select-all {
@@ -806,17 +818,20 @@
             color: var(--accent-hover);
         }
 
+        /* ===== CRUCIAL: El cuerpo del grupo usa flex-wrap para distribución horizontal ===== */
         .cat-group-body {
             display: none;
             flex-wrap: wrap;
             gap: 6px;
             padding: 10px 14px 14px;
+            width: 100%;
         }
 
         .cat-group.open .cat-group-body {
             display: flex;
         }
 
+        /* ===== CADA ETIQUETA se muestra en línea horizontal ===== */
         .cat-tag {
             display: inline-flex;
             align-items: center;
@@ -830,7 +845,8 @@
             cursor: pointer;
             transition: var(--transition);
             user-select: none;
-            position: relative;
+            flex-shrink: 0;
+            max-width: 100%;
         }
 
         .cat-tag:hover {
@@ -857,6 +873,7 @@
         .cat-tag .cat-emoji {
             font-size: 14px;
             line-height: 1;
+            flex-shrink: 0;
         }
 
         .cat-tag .cat-label {
@@ -864,20 +881,7 @@
             font-weight: 500;
             color: var(--text-secondary);
             transition: var(--transition);
-        }
-
-        .cat-tag .cat-count-badge {
-            font-size: 10px;
-            color: var(--text-muted);
-            background: var(--bg-card);
-            padding: 0 6px;
-            border-radius: 10px;
-            margin-left: 2px;
-        }
-
-        .cat-tag.active .cat-count-badge {
-            background: rgba(52, 211, 153, 0.1);
-            color: var(--green);
+            white-space: nowrap;
         }
 
         .category-search {
@@ -952,11 +956,6 @@
             cursor: pointer;
         }
 
-        /* Indicador visual de grupo abierto */
-        .cat-group .cat-group-body .cat-tag:last-child {
-            margin-right: 0;
-        }
-
         @media (max-width: 600px) {
             .cat-tag {
                 padding: 4px 10px 4px 8px;
@@ -978,6 +977,9 @@
             }
             .category-toolbar .cat-info {
                 text-align: center;
+            }
+            .cat-group-title .group-name {
+                font-size: 12px;
             }
         }
     </style>
@@ -1551,12 +1553,12 @@
                     const groupId = `catgrp-${idx}`;
                     const groupEmoji = cats[0]?.emoji || '📌';
                     html += `
-                        <div class="cat-group" data-group="${groupId}">
+                        <div class="cat-group open" data-group="${groupId}">
                             <div class="cat-group-header" data-toggle="${groupId}">
                                 <span class="chevron">▶</span>
                                 <span class="cat-group-title">
                                     <span class="group-emoji">${groupEmoji}</span>
-                                    ${groupName}
+                                    <span class="group-name">${groupName}</span>
                                     <span class="cat-group-count" data-count="${groupId}">0/${cats.length}</span>
                                 </span>
                                 <button type="button" class="cat-group-select-all" data-select-all="${groupId}">Seleccionar todo</button>
@@ -1938,7 +1940,9 @@
                         if (matches) anyVisible = true;
                     });
                     group.style.display = anyVisible ? '' : 'none';
-                    group.classList.toggle('open', query.length > 0 && anyVisible);
+                    if (query.length > 0 && anyVisible) {
+                        group.classList.add('open');
+                    }
                 });
             });
 

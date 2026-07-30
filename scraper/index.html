@@ -1,0 +1,1929 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Velionix Data Collector</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+    <style>
+        /* ============================================================
+           ROOT VARIABLES - TEMA OSCURO FLOWBITE
+           ============================================================ */
+        :root {
+            --bg-primary: #08080a;
+            --bg-secondary: #0c0c0f;
+            --bg-card: #131316;
+            --bg-card-hover: #18181c;
+            --bg-input: #141417;
+            --border-color: rgba(212, 187, 130, 0.14);
+            --border-light: rgba(212, 187, 130, 0.28);
+            --text-primary: #f4f2ec;
+            --text-secondary: #a8a6a0;
+            --text-muted: #6f6d68;
+            --accent: #d4af5a;
+            --accent-hover: #e8c168;
+            --accent-glow: rgba(212, 175, 90, 0.14);
+            --cyan: #c7cad1;
+            --green: #8fae8a;
+            --green-glow: rgba(143, 174, 138, 0.15);
+            --yellow: #d4af5a;
+            --red: #c0685e;
+            --radius: 14px;
+            --radius-sm: 9px;
+            --shadow: 0 12px 45px rgba(0, 0, 0, 0.6);
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px 24px 40px;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+
+        .app-container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        /* ============================================================
+           HEADER
+           ============================================================ */
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 24px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            margin-bottom: 24px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #2a2a2a, #000000);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #fff;
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
+
+        .logo span {
+            background: linear-gradient(135deg, #ffffff, #a8a8a8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .badge-version {
+            font-size: 11px;
+            background: var(--bg-card);
+            padding: 2px 10px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            background: var(--bg-card);
+            padding: 6px 16px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--green);
+            animation: pulse-dot 2s ease-in-out infinite;
+            box-shadow: 0 0 10px var(--green-glow);
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        .btn-icon {
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            font-size: 18px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-icon:hover {
+            background: var(--bg-input);
+            border-color: var(--border-light);
+            color: var(--text-primary);
+        }
+
+        /* ============================================================
+           STATS GRID - ESTILO FLOWBITE
+           ============================================================ */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 18px 20px;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            border-color: var(--border-light);
+            transform: translateY(-2px);
+        }
+
+        .stat-card .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+
+        .stat-card .stat-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .stat-card .stat-change {
+            font-size: 13px;
+            margin-top: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            color: var(--green);
+        }
+
+        .stat-card .stat-change.negative {
+            color: var(--red);
+        }
+
+        .stat-card .stat-change .arrow {
+            font-size: 16px;
+        }
+
+        /* ============================================================
+           CARDS
+           ============================================================ */
+        .card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            border-color: var(--border-light);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+
+        .card-title {
+            font-weight: 600;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-primary);
+        }
+
+        .card-title .icon {
+            font-size: 18px;
+        }
+
+        .card-subtitle {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* ============================================================
+           FORMULARIO
+           ============================================================ */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: inherit;
+            transition: var(--transition);
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        .form-control::placeholder {
+            color: var(--text-muted);
+        }
+
+        select.form-control {
+            appearance: none;
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2368688a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ============================================================
+           BOTONES
+           ============================================================ */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 28px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1c1c1c, #000000);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: #fff;
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.35);
+            box-shadow: 0 0 50px var(--accent-glow);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-success {
+            background: var(--green);
+            color: #0a0a0f;
+        }
+
+        .btn-success:hover {
+            opacity: 0.85;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--text-secondary);
+            color: var(--text-primary);
+            background: var(--bg-input);
+        }
+
+        .btn-sm {
+            padding: 6px 14px;
+            font-size: 12px;
+        }
+
+        .btn-xs {
+            padding: 4px 10px;
+            font-size: 11px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .w-full {
+            width: 100%;
+        }
+
+        /* ============================================================
+           PROGRESS BAR
+           ============================================================ */
+        .progress-container {
+            margin-top: 14px;
+        }
+
+        .progress-bar-track {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-card);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #d4d4d4, #ffffff);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 6px;
+        }
+
+        /* ============================================================
+           STATUS BADGE
+           ============================================================ */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-badge.running {
+            background: rgba(251, 191, 36, 0.15);
+            color: var(--yellow);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+        }
+        .status-badge.completed {
+            background: rgba(52, 211, 153, 0.15);
+            color: var(--green);
+            border: 1px solid rgba(52, 211, 153, 0.2);
+        }
+        .status-badge.failed {
+            background: rgba(248, 113, 113, 0.15);
+            color: var(--red);
+            border: 1px solid rgba(248, 113, 113, 0.2);
+        }
+        .status-badge.pending {
+            background: rgba(79, 140, 247, 0.15);
+            color: var(--accent);
+            border: 1px solid rgba(79, 140, 247, 0.2);
+        }
+
+        /* ============================================================
+           RESULTADOS
+           ============================================================ */
+        .results-container {
+            margin-top: 16px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 14px 18px;
+            background: var(--bg-card);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            margin-bottom: 8px;
+            transition: var(--transition);
+        }
+
+        .result-item:hover {
+            border-color: var(--border-light);
+            background: var(--bg-card-hover);
+        }
+
+        .result-item .info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .result-item .name {
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--text-primary);
+        }
+
+        .result-item .details {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+            word-break: break-word;
+        }
+
+        .result-item .signals {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+
+        .signal-pill {
+            font-size: 11px;
+            padding: 2px 10px;
+            border-radius: 12px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+        }
+
+        .signal-pill.active {
+            border-color: var(--green);
+            color: var(--green);
+            background: rgba(52, 211, 153, 0.05);
+        }
+
+        .result-email {
+            color: var(--cyan);
+            font-size: 13px;
+        }
+
+        .result-phone {
+            color: var(--yellow);
+            font-size: 13px;
+        }
+
+        /* ============================================================
+           HISTORIAL - CON UBICACIÓN
+           ============================================================ */
+        .history-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 18px;
+            background: var(--bg-card);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            margin-bottom: 8px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .history-item:hover {
+            border-color: var(--border-light);
+            background: var(--bg-card-hover);
+        }
+
+        .history-item .left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+
+        .history-item .mode {
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            background: var(--bg-input);
+            padding: 2px 10px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .history-item .location {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .history-item .meta {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .history-item .right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .history-item .badge-count {
+            font-size: 12px;
+            color: var(--text-muted);
+            background: var(--bg-input);
+            padding: 2px 10px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* ============================================================
+           TOAST
+           ============================================================ */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            padding: 14px 20px;
+            border-radius: var(--radius-sm);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-size: 14px;
+            box-shadow: var(--shadow);
+            animation: slideUp 0.3s ease;
+            max-width: 380px;
+            backdrop-filter: blur(16px);
+        }
+
+        .toast.success { border-color: var(--green); }
+        .toast.error { border-color: var(--red); }
+        .toast.info { border-color: var(--accent); }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ============================================================
+           UTILIDADES
+           ============================================================ */
+        .hidden { display: none !important; }
+        .mt-2 { margin-top: 8px; }
+        .mt-3 { margin-top: 16px; }
+        .mb-2 { margin-bottom: 8px; }
+        .flex { display: flex; }
+        .flex-between { display: flex; justify-content: space-between; align-items: center; }
+        .gap-2 { gap: 8px; }
+        .gap-3 { gap: 16px; }
+        .text-muted { color: var(--text-muted); }
+        .text-center { text-align: center; }
+        .fade-in { animation: fadeIn 0.4s ease; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state .icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+
+        .empty-state h4 {
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 768px) {
+            body { padding: 12px 16px; }
+            .app-header { flex-direction: column; gap: 12px; align-items: flex-start; padding: 16px; }
+            .header-actions { width: 100%; justify-content: space-between; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .stat-card .stat-value { font-size: 22px; }
+            .result-item { flex-direction: column; gap: 8px; }
+            .history-item { flex-direction: column; align-items: flex-start; gap: 6px; }
+            .history-item .left { gap: 8px; }
+            .history-item .right { width: 100%; justify-content: flex-start; }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+            .card { padding: 16px; }
+        }
+
+        /* ============================================================
+           CATEGORÍAS — AGRUPADAS Y COLAPSABLES
+           ============================================================ */
+        .category-container {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-height: 360px;
+            overflow-y: auto;
+            padding: 10px;
+            background: var(--bg-input);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+        }
+
+        .cat-group {
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--bg-card);
+            overflow: hidden;
+        }
+
+        .cat-group-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            cursor: pointer;
+            user-select: none;
+            transition: var(--transition);
+        }
+
+        .cat-group-header:hover { background: var(--bg-card-hover); }
+
+        .cat-group-header .chevron {
+            font-size: 11px;
+            color: var(--text-muted);
+            transition: transform 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .cat-group.open .cat-group-header .chevron { transform: rotate(90deg); }
+
+        .cat-group-title {
+            flex: 1;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cat-group-count {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .cat-group-select-all {
+            font-size: 11px;
+            color: var(--accent);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 3px 8px;
+            border-radius: 10px;
+            flex-shrink: 0;
+        }
+
+        .cat-group-select-all:hover { background: var(--accent-glow); }
+
+        .cat-group-body {
+            display: none;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 4px 12px 12px;
+        }
+
+        .cat-group.open .cat-group-body { display: flex; }
+
+        .cat-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            user-select: none;
+        }
+
+        .cat-tag:hover {
+            border-color: var(--border-light);
+            color: var(--text-primary);
+        }
+
+        .cat-tag.active {
+            background: var(--accent-glow);
+            border-color: var(--accent);
+            color: var(--text-primary);
+        }
+
+        .cat-tag input[type="checkbox"] {
+            display: none;
+        }
+
+        .cat-tag .cat-emoji {
+            font-size: 14px;
+        }
+
+        .cat-tag .cat-label {
+            font-size: 12px;
+        }
+
+        .cat-tag .cat-count {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-left: 2px;
+        }
+
+        .category-search {
+            margin-bottom: 8px;
+        }
+
+        .category-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .category-toolbar .cat-info {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .category-toolbar .cat-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .category-toolbar .cat-actions button {
+            background: none;
+            border: none;
+            color: var(--accent);
+            font-size: 12px;
+            cursor: pointer;
+            padding: 2px 8px;
+            border-radius: 12px;
+            transition: var(--transition);
+        }
+
+        .category-toolbar .cat-actions button:hover {
+            background: var(--bg-card);
+            color: var(--accent-hover);
+        }
+
+        .category-toolbar .cat-all-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .category-toolbar .cat-all-toggle input[type="checkbox"] {
+            accent-color: var(--accent);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-container">
+
+        <!-- ============================================================
+        HEADER
+        ============================================================ -->
+        <header class="app-header">
+            <div class="logo">
+                <div class="logo-icon"><img src="/logo.png" alt="Velionix" style="width:22px;height:22px;object-fit:contain;" onerror="this.parentElement.textContent='◆'"></div>
+                <span>Velionix</span>
+                <span class="badge-version">Data Collector</span>
+            </div>
+            <div class="header-actions">
+                <a href="/" title="Volver al Dashboard" style="display:inline-flex;align-items:center;gap:6px;color:inherit;text-decoration:none;opacity:0.75;font-size:13px;">← Dashboard</a>
+                <div class="status-indicator">
+                    <span class="status-dot"></span>
+                    <span id="apiStatus">Operativo</span>
+                </div>
+                <button class="btn-icon" id="refreshBtn" title="Actualizar">↻</button>
+            </div>
+        </header>
+
+        <!-- ============================================================
+        STATS DASHBOARD
+        ============================================================ -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-value" id="statTotal">0</div>
+                <div class="stat-label">Total negocios</div>
+                <div class="stat-change"><span class="arrow">↑</span> Encontrados</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="statEmails">0</div>
+                <div class="stat-label">Con email</div>
+                <div class="stat-change"><span class="arrow">↑</span> Contacto</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="statWhatsapp">0</div>
+                <div class="stat-label">Con WhatsApp</div>
+                <div class="stat-change"><span class="arrow">↑</span> Mensajería</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="statWebsites">0</div>
+                <div class="stat-label">Con sitio web</div>
+                <div class="stat-change"><span class="arrow">↑</span> Presencia online</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="statInstagram">0</div>
+                <div class="stat-label">Con Instagram</div>
+                <div class="stat-change"><span class="arrow">↑</span> Social</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="statSsl">0</div>
+                <div class="stat-label">Con SSL</div>
+                <div class="stat-change"><span class="arrow">↑</span> Seguro</div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        FORMULARIO
+        ============================================================ -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span class="icon">🔍</span> Nueva búsqueda
+                </div>
+                <span class="card-subtitle">Encuentra negocios por país, ciudad y categoría</span>
+            </div>
+            <form id="searchForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="countrySelect">🌎 País</label>
+                        <select class="form-control" id="countrySelect">
+                            <option value="">Selecciona un país...</option>
+                            <option value="Estados Unidos">Estados Unidos</option>
+                            <option value="España">España</option>
+                            <option value="México">México</option>
+                            <option value="Argentina">Argentina</option>
+                            <option value="Colombia">Colombia</option>
+                            <option value="Chile">Chile</option>
+                            <option value="Perú">Perú</option>
+                            <option value="Venezuela">Venezuela</option>
+                            <option value="Reino Unido">Reino Unido</option>
+                            <option value="Francia">Francia</option>
+                            <option value="Italia">Italia</option>
+                            <option value="Alemania">Alemania</option>
+                            <option value="Portugal">Portugal</option>
+                            <option value="Canadá">Canadá</option>
+                            <option value="Australia">Australia</option>
+                            <option value="Japón">Japón</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="citySelect">🏙️ Ciudad</label>
+                        <select class="form-control" id="citySelect">
+                            <option value="">Selecciona una ciudad...</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">🏷️ Categorías</label>
+                    <input type="text" class="form-control category-search" id="categorySearch" placeholder="🔎 Buscar categoría... (ej. restaurante, abogado)" />
+                    <div class="category-toolbar">
+                        <label class="cat-all-toggle">
+                            <input type="checkbox" id="catAllBusinesses">
+                            <span>🌐 Todos</span>
+                        </label>
+                        <div class="cat-actions">
+                            <button type="button" id="catClearBtn">✕ Limpiar</button>
+                        </div>
+                        <span class="cat-info" id="catSelectedCount">0 seleccionadas</span>
+                    </div>
+                    <div class="category-container" id="categoryContainer">
+                        <!-- Categorías generadas por JavaScript -->
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary w-full" id="searchBtn">
+                    🔎 Buscar negocios
+                </button>
+            </form>
+        </div>
+
+        <!-- ============================================================
+        ESTADO DE BÚSQUEDA
+        ============================================================ -->
+        <div id="statusCard" class="card hidden fade-in">
+            <div class="flex-between">
+                <div>
+                    <span id="statusMessage">⏳ Procesando...</span>
+                    <span id="statusBadge" class="status-badge running" style="margin-left:12px;">Buscando</span>
+                </div>
+                <span id="jobIdDisplay" class="text-muted" style="font-family:monospace;font-size:13px;"></span>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar-track">
+                    <div class="progress-bar-fill" id="progressFill" style="width:0%;"></div>
+                </div>
+                <div class="progress-text">
+                    <span id="progressLabel">Iniciando...</span>
+                    <span id="progressCount">0 encontrados</span>
+                </div>
+            </div>
+            <div class="mt-2 flex gap-2">
+                <button class="btn btn-outline btn-sm" id="refreshStatusBtn">🔄 Actualizar</button>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        RESULTADOS
+        ============================================================ -->
+        <div id="resultsCard" class="card hidden fade-in">
+            <div class="card-header">
+                <div class="card-title">
+                    <span class="icon">📊</span> Resultados
+                    <span id="resultCount" class="card-subtitle"></span>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-success btn-sm" id="exportCsvBtn">⬇️ CSV</button>
+                    <button class="btn btn-success btn-sm" id="exportXlsxBtn">⬇️ Excel</button>
+                    <button class="btn btn-success btn-sm" id="exportJsonBtn">⬇️ JSON</button>
+                </div>
+            </div>
+            <div class="results-container" id="resultsList">
+                <div class="empty-state">
+                    <div class="icon">🔍</div>
+                    <h4>No hay resultados</h4>
+                    <p>Realiza una búsqueda para ver los negocios</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        HISTORIAL - CON UBICACIÓN
+        ============================================================ -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span class="icon">📋</span> Historial de búsquedas
+                </div>
+                <button class="btn btn-outline btn-sm" id="refreshHistoryBtn">↻ Actualizar</button>
+            </div>
+            <div id="historyList">
+                <div class="empty-state">
+                    <div class="icon">📭</div>
+                    <h4>No hay búsquedas</h4>
+                    <p>Las búsquedas aparecerán aquí</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        FOOTER
+        ============================================================ -->
+        <div class="text-center text-muted" style="font-size:13px;padding:16px 0;border-top:1px solid var(--border-color);margin-top:8px;">
+            Velionix Data Collector &bull; v1.0 &bull; Hecho con ❤️ para automatización de negocios
+        </div>
+
+    </div>
+
+    <!-- ============================================================
+    TOAST CONTAINER
+    ============================================================ -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ============================================================
+    SCRIPT
+    ============================================================ -->
+    <script>
+        (function() {
+            'use strict';
+
+            // 🔥 API KEY CORRECTA - Debe coincidir con Render
+            const DEFAULT_API_KEY = 'wcWapaD4';
+
+            // 🔥 Forzar la clave correcta en localStorage
+            let storedKey = localStorage.getItem('velionix_api_key');
+            if (storedKey === '958b01269dc61cbf8ff6d2b2dfc8dba1' || !storedKey) {
+                localStorage.setItem('velionix_api_key', DEFAULT_API_KEY);
+            }
+            let API_KEY = localStorage.getItem('velionix_api_key');
+
+            console.log('🔑 API Key cargada:', API_KEY);
+
+            const API_URL = window.location.origin;
+            let currentJobId = null;
+            let statusInterval = null;
+            let isSearching = false;
+
+            const $ = (sel) => document.querySelector(sel);
+            const $$ = (sel) => document.querySelectorAll(sel);
+
+            const countrySelect = $('#countrySelect');
+            const citySelect = $('#citySelect');
+            const categorySearch = $('#categorySearch');
+            const categoryContainer = $('#categoryContainer');
+            const catAllBusinesses = $('#catAllBusinesses');
+            const catClearBtn = $('#catClearBtn');
+            const catSelectedCount = $('#catSelectedCount');
+            const searchBtn = $('#searchBtn');
+            const searchForm = $('#searchForm');
+
+            const statusCard = $('#statusCard');
+            const statusMessage = $('#statusMessage');
+            const statusBadge = $('#statusBadge');
+            const jobIdDisplay = $('#jobIdDisplay');
+            const progressFill = $('#progressFill');
+            const progressLabel = $('#progressLabel');
+            const progressCount = $('#progressCount');
+            const refreshStatusBtn = $('#refreshStatusBtn');
+
+            const resultsCard = $('#resultsCard');
+            const resultsList = $('#resultsList');
+            const resultCount = $('#resultCount');
+            const exportCsvBtn = $('#exportCsvBtn');
+            const exportXlsxBtn = $('#exportXlsxBtn');
+            const exportJsonBtn = $('#exportJsonBtn');
+
+            const historyList = $('#historyList');
+            const refreshHistoryBtn = $('#refreshHistoryBtn');
+            const refreshBtn = $('#refreshBtn');
+
+            const statTotal = $('#statTotal');
+            const statEmails = $('#statEmails');
+            const statWhatsapp = $('#statWhatsapp');
+            const statWebsites = $('#statWebsites');
+            const statInstagram = $('#statInstagram');
+            const statSsl = $('#statSsl');
+
+            const toastContainer = $('#toastContainer');
+
+            // ============================================================
+            // CIUDADES POR PAÍS
+            // ============================================================
+            const CITIES_BY_COUNTRY = {
+                "Estados Unidos": [
+                    "New York, NY", "Los Angeles, CA", "Chicago, IL", "Houston, TX",
+                    "Phoenix, AZ", "Philadelphia, PA", "San Antonio, TX", "San Diego, CA",
+                    "Dallas, TX", "Austin, TX", "Jacksonville, FL", "San Francisco, CA",
+                    "Columbus, OH", "Indianapolis, IN", "Fort Worth, TX", "Charlotte, NC",
+                    "Seattle, WA", "Denver, CO", "Washington D.C.", "Boston, MA",
+                    "El Paso, TX", "Detroit, MI", "Nashville, TN", "Portland, OR",
+                    "Memphis, TN", "Oklahoma City, OK", "Las Vegas, NV", "Louisville, KY",
+                    "Baltimore, MD", "Milwaukee, WI", "Albuquerque, NM", "Tucson, AZ",
+                    "Fresno, CA", "Sacramento, CA", "Kansas City, MO", "Mesa, AZ",
+                    "Atlanta, GA", "Miami, FL", "Omaha, NE", "Raleigh, NC",
+                    "Colorado Springs, CO", "Virginia Beach, VA", "Long Beach, CA",
+                    "Oakland, CA", "Minneapolis, MN", "Tulsa, OK", "Arlington, TX",
+                    "New Orleans, LA", "Wichita, KS", "Cleveland, OH", "Tampa, FL"
+                ],
+                "España": [
+                    "Madrid", "Barcelona", "Valencia", "Sevilla", "Zaragoza",
+                    "Málaga", "Murcia", "Palma de Mallorca", "Las Palmas",
+                    "Bilbao", "Alicante", "Córdoba", "Valladolid", "Vigo",
+                    "Gijón", "Granada", "Oviedo", "Santander", "Castellón",
+                    "Tenerife", "Badajoz", "Tarragona", "Marbella", "León", "Cádiz"
+                ],
+                "México": [
+                    "Ciudad de México", "Guadalajara", "Monterrey", "Puebla",
+                    "Toluca", "Tijuana", "León", "Querétaro", "San Luis Potosí",
+                    "Mérida", "Mexicali", "Aguascalientes", "Hermosillo", "Saltillo",
+                    "Morelia", "Chihuahua", "Cancún", "Tuxtla Gutiérrez", "Tampico",
+                    "Veracruz", "Acapulco", "Culiacán", "Oaxaca", "Villahermosa"
+                ],
+                "Argentina": [
+                    "Buenos Aires", "Córdoba", "Rosario", "Mendoza", "La Plata",
+                    "San Miguel de Tucumán", "Mar del Plata", "Salta", "Santa Fe",
+                    "San Juan", "Resistencia", "Bahía Blanca", "Neuquén", "Santiago del Estero",
+                    "Corrientes", "Posadas", "Paraná", "San Luis", "Catamarca"
+                ],
+                "Colombia": [
+                    "Bogotá", "Medellín", "Cali", "Barranquilla", "Cartagena",
+                    "Cúcuta", "Bucaramanga", "Pereira", "Santa Marta", "Ibagué",
+                    "Pasto", "Manizales", "Neiva", "Villavicencio", "Armenia"
+                ],
+                "Chile": [
+                    "Santiago", "Valparaíso", "Concepción", "La Serena", "Viña del Mar",
+                    "Temuco", "Rancagua", "Iquique", "Antofagasta", "Puerto Montt",
+                    "Arica", "Talca", "Chillán", "Calama", "Los Ángeles", "Punta Arenas"
+                ],
+                "Perú": [
+                    "Lima", "Arequipa", "Trujillo", "Chiclayo", "Piura",
+                    "Cusco", "Pucallpa", "Tacna", "Iquitos", "Huancayo"
+                ],
+                "Venezuela": [
+                    "Caracas", "Maracaibo", "Valencia", "Barquisimeto", "Maracay",
+                    "Ciudad Guayana", "San Cristóbal", "Mérida", "Barcelona", "Cumaná"
+                ],
+                "Reino Unido": [
+                    "Londres", "Manchester", "Birmingham", "Leeds", "Glasgow",
+                    "Liverpool", "Sheffield", "Bristol", "Edinburgh", "Cardiff"
+                ],
+                "Francia": [
+                    "París", "Marsella", "Lyon", "Toulouse", "Niza",
+                    "Nantes", "Estrasburgo", "Montpellier", "Burdeos", "Lille"
+                ],
+                "Italia": [
+                    "Roma", "Milán", "Nápoles", "Turín", "Palermo",
+                    "Génova", "Bolonia", "Florencia", "Bari", "Catania"
+                ],
+                "Alemania": [
+                    "Berlín", "Hamburgo", "Múnich", "Colonia", "Fráncfort",
+                    "Stuttgart", "Düsseldorf", "Leipzig", "Dortmund", "Essen"
+                ],
+                "Portugal": [
+                    "Lisboa", "Porto", "Braga", "Coímbra", "Faro",
+                    "Setúbal", "Évora", "Aveiro", "Viseu", "Beja"
+                ],
+                "Canadá": [
+                    "Toronto", "Montreal", "Vancouver", "Calgary", "Edmonton",
+                    "Ottawa", "Quebec", "Winnipeg", "Hamilton", "Halifax"
+                ],
+                "Australia": [
+                    "Sídney", "Melbourne", "Brisbane", "Perth", "Adelaida",
+                    "Gold Coast", "Canberra", "Newcastle", "Wollongong", "Hobart"
+                ],
+                "Japón": [
+                    "Tokio", "Yokohama", "Osaka", "Nagoya", "Sapporo",
+                    "Kobe", "Kioto", "Fukuoka", "Kawasaki", "Saitama"
+                ]
+            };
+
+            // ============================================================
+            // CATEGORÍAS (OPCIÓN 3 - COMPACTAS)
+            // ============================================================
+            const CATEGORIES = [
+                { emoji: '🏥', group: 'Salud y Bienestar', label: 'Dentistas', tag: 'amenity=dentist', search: 'dentistas dentist' },
+                { emoji: '🏥', group: 'Salud y Bienestar', label: 'Clínicas', tag: 'amenity=clinic', search: 'clínicas clinic' },
+                { emoji: '🏥', group: 'Salud y Bienestar', label: 'Hospitales', tag: 'amenity=hospital', search: 'hospitales hospital' },
+                { emoji: '🏥', group: 'Salud y Bienestar', label: 'Veterinarias', tag: 'amenity=veterinary', search: 'veterinarias veterinary' },
+                { emoji: '🏥', group: 'Salud y Bienestar', label: 'Farmacias', tag: 'amenity=pharmacy', search: 'farmacias pharmacy' },
+                { emoji: '🏥', group: 'Salud y Bienestar', label: 'Ópticas', tag: 'shop=optician', search: 'ópticas optician' },
+                { emoji: '🏥', group: 'Salud y Bienestar', label: 'Fisioterapeutas', tag: 'amenity=physiotherapist', search: 'fisioterapeutas physiotherapist' },
+                { emoji: '🏥', group: 'Salud y Bienestar', label: 'Psicólogos', tag: 'amenity=psychologist', search: 'psicólogos psychologist' },
+                { emoji: '🏥', group: 'Salud y Bienestar', label: 'Nutricionistas', tag: 'amenity=nutritionist', search: 'nutricionistas nutritionist' },
+                { emoji: '🏥', group: 'Salud y Bienestar', label: 'Quiroprácticos', tag: 'amenity=chiropractor', search: 'quiroprácticos chiropractor' },
+                { emoji: '🏥', group: 'Salud y Bienestar', label: 'Podólogos', tag: 'amenity=podiatrist', search: 'podólogos podiatrist' },
+                { emoji: '🏥', group: 'Salud y Bienestar', label: 'Logopedas', tag: 'amenity=speech_therapist', search: 'logopedas speech therapist' },
+                { emoji: '🏥', group: 'Salud y Bienestar', label: 'Terapeutas ocupacionales', tag: 'amenity=occupational_therapist', search: 'terapeutas ocupacionales occupational therapist' },
+                { emoji: '🏥', group: 'Salud y Bienestar', label: 'Audiólogos', tag: 'shop=hearing_aids', search: 'audiólogos audiologist' },
+                { emoji: '💼', group: 'Servicios Profesionales', label: 'Abogados', tag: 'office=lawyer', search: 'abogados lawyer' },
+                { emoji: '💼', group: 'Servicios Profesionales', label: 'Notarios', tag: 'office=notary', search: 'notarios notary' },
+                { emoji: '💼', group: 'Servicios Profesionales', label: 'Arquitectos', tag: 'office=architect', search: 'arquitectos architect' },
+                { emoji: '💼', group: 'Servicios Profesionales', label: 'Ingenieros', tag: 'office=engineer', search: 'ingenieros engineer' },
+                { emoji: '💼', group: 'Servicios Profesionales', label: 'Contables y asesores', tag: 'office=accountant', search: 'contables y asesores accountant' },
+                { emoji: '💼', group: 'Servicios Profesionales', label: 'Consultores', tag: 'office=consultant', search: 'consultores consultant' },
+                { emoji: '💼', group: 'Servicios Profesionales', label: 'Asesores fiscales', tag: 'office=tax_advisor', search: 'asesores fiscales tax advisor' },
+                { emoji: '💼', group: 'Servicios Profesionales', label: 'Agencias de seguros', tag: 'office=insurance', search: 'agencias de seguros insurance' },
+                { emoji: '💼', group: 'Servicios Profesionales', label: 'Inmobiliarias', tag: 'office=estate_agent', search: 'inmobiliarias estate agent' },
+                { emoji: '💼', group: 'Servicios Profesionales', label: 'Asesores financieros', tag: 'office=financial', search: 'asesores financieros financial' },
+                { emoji: '🏨', group: 'Alojamiento y Turismo', label: 'Hoteles', tag: 'tourism=hotel', search: 'hoteles hotel' },
+                { emoji: '🏨', group: 'Alojamiento y Turismo', label: 'Hostales', tag: 'tourism=hostel', search: 'hostales hostel' },
+                { emoji: '🏨', group: 'Alojamiento y Turismo', label: 'Apartamentos turísticos', tag: 'tourism=apartment', search: 'apartamentos turísticos apartment' },
+                { emoji: '🏨', group: 'Alojamiento y Turismo', label: 'Casas rurales', tag: 'tourism=guest_house', search: 'casas rurales guest house' },
+                { emoji: '🏨', group: 'Alojamiento y Turismo', label: 'Campings', tag: 'tourism=camp_site', search: 'campings camp site' },
+                { emoji: '🏨', group: 'Alojamiento y Turismo', label: 'Moteles', tag: 'tourism=motel', search: 'moteles motel' },
+                { emoji: '🏨', group: 'Alojamiento y Turismo', label: 'Bed & Breakfast', tag: 'tourism=bed_and_breakfast', search: 'bed & breakfast bed and breakfast' },
+                { emoji: '🏨', group: 'Alojamiento y Turismo', label: 'Agencias de viaje', tag: 'office=travel_agency', search: 'agencias de viaje travel agency' },
+                { emoji: '🏨', group: 'Alojamiento y Turismo', label: 'Oficinas de turismo', tag: 'tourism=information', search: 'oficinas de turismo tourist info' },
+                { emoji: '💇', group: 'Belleza y Cuidado Personal', label: 'Peluquerías', tag: 'shop=hairdresser', search: 'peluquerías hairdresser' },
+                { emoji: '💇', group: 'Belleza y Cuidado Personal', label: 'Barberías', tag: 'shop=barber', search: 'barberías barber' },
+                { emoji: '💇', group: 'Belleza y Cuidado Personal', label: 'Centros de estética', tag: 'shop=beauty', search: 'centros de estética beauty' },
+                { emoji: '💇', group: 'Belleza y Cuidado Personal', label: 'Spa y centros de bienestar', tag: 'tourism=spa', search: 'spa y centros de bienestar spa' },
+                { emoji: '💇', group: 'Belleza y Cuidado Personal', label: 'Salones de uñas', tag: 'shop=nail_salon', search: 'salones de uñas nail salon' },
+                { emoji: '💇', group: 'Belleza y Cuidado Personal', label: 'Tatuajes y piercings', tag: 'shop=tattoo', search: 'tatuajes y piercings tattoo' },
+                { emoji: '💇', group: 'Belleza y Cuidado Personal', label: 'Tiendas de cosméticos', tag: 'shop=cosmetics', search: 'tiendas de cosméticos cosmetics' },
+                { emoji: '💇', group: 'Belleza y Cuidado Personal', label: 'Perfumerías', tag: 'shop=perfume', search: 'perfumerías perfume' },
+                { emoji: '💇', group: 'Belleza y Cuidado Personal', label: 'Centros de masajes', tag: 'amenity=massage', search: 'centros de masajes massage' },
+                { emoji: '💇', group: 'Belleza y Cuidado Personal', label: 'Centros de bronceado', tag: 'shop=tanning', search: 'centros de bronceado tanning' },
+                { emoji: '💇', group: 'Belleza y Cuidado Personal', label: 'Saunas', tag: 'amenity=sauna', search: 'saunas sauna' },
+                { emoji: '🏋️', group: 'Deporte y Fitness', label: 'Gimnasios', tag: 'leisure=fitness', search: 'gimnasios gym' },
+                { emoji: '🏋️', group: 'Deporte y Fitness', label: 'Centros deportivos', tag: 'leisure=sports_centre', search: 'centros deportivos sports centre' },
+                { emoji: '🏋️', group: 'Deporte y Fitness', label: 'Estudios de yoga', tag: 'amenity=yoga', search: 'estudios de yoga yoga' },
+                { emoji: '🏋️', group: 'Deporte y Fitness', label: 'Estudios de pilates', tag: 'amenity=pilates', search: 'estudios de pilates pilates' },
+                { emoji: '🏋️', group: 'Deporte y Fitness', label: 'Escuelas de baile', tag: 'amenity=dance', search: 'escuelas de baile dance' },
+                { emoji: '🏋️', group: 'Deporte y Fitness', label: 'Artes marciales', tag: 'leisure=martial_arts', search: 'artes marciales martial arts' },
+                { emoji: '🏋️', group: 'Deporte y Fitness', label: 'Piscinas', tag: 'leisure=swimming_pool', search: 'piscinas swimming pool' },
+                { emoji: '🏋️', group: 'Deporte y Fitness', label: 'Rocódromos', tag: 'leisure=climbing', search: 'rocódromos climbing' },
+                { emoji: '🏋️', group: 'Deporte y Fitness', label: 'Centros de fitness', tag: 'shop=fitness', search: 'centros de fitness fitness center' },
+                { emoji: '🍽️', group: 'Alimentación y Bebidas', label: 'Restaurantes', tag: 'amenity=restaurant', search: 'restaurantes restaurant' },
+                { emoji: '🍽️', group: 'Alimentación y Bebidas', label: 'Cafeterías', tag: 'amenity=cafe', search: 'cafeterías cafe' },
+                { emoji: '🍽️', group: 'Alimentación y Bebidas', label: 'Panaderías', tag: 'shop=bakery', search: 'panaderías bakery' },
+                { emoji: '🍽️', group: 'Alimentación y Bebidas', label: 'Pastelerías', tag: 'shop=confectionery', search: 'pastelerías confectionery' },
+                { emoji: '🍽️', group: 'Alimentación y Bebidas', label: 'Pizzerías', tag: 'amenity=pizzeria', search: 'pizzerías pizzeria' },
+                { emoji: '🍽️', group: 'Alimentación y Bebidas', label: 'Comida rápida', tag: 'amenity=fast_food', search: 'comida rápida fast food' },
+                { emoji: '🍽️', group: 'Alimentación y Bebidas', label: 'Hamburgueserías', tag: 'amenity=fast_food', search: 'hamburgueserías hamburger' },
+                { emoji: '🍽️', group: 'Alimentación y Bebidas', label: 'Bares', tag: 'amenity=bar', search: 'bares bar' },
+                { emoji: '🍽️', group: 'Alimentación y Bebidas', label: 'Discotecas', tag: 'amenity=nightclub', search: 'discotecas nightclub' },
+                { emoji: '🍽️', group: 'Alimentación y Bebidas', label: 'Heladerías', tag: 'shop=ice_cream', search: 'heladerías ice cream' },
+                { emoji: '🍽️', group: 'Alimentación y Bebidas', label: 'Chocolaterías', tag: 'shop=chocolate', search: 'chocolaterías chocolate' },
+                { emoji: '🍽️', group: 'Alimentación y Bebidas', label: 'Tiendas de vinos', tag: 'shop=wine', search: 'tiendas de vinos wine' },
+                { emoji: '🍽️', group: 'Alimentación y Bebidas', label: 'Cervecerías', tag: 'shop=brewery', search: 'cervecerías brewery' },
+                { emoji: '🍽️', group: 'Alimentación y Bebidas', label: 'Tostaderos de café', tag: 'shop=coffee', search: 'tostaderos de café coffee roaster' },
+                { emoji: '🍽️', group: 'Alimentación y Bebidas', label: 'Teterías', tag: 'shop=tea', search: 'teterías tea' },
+                { emoji: '🍽️', group: 'Alimentación y Bebidas', label: 'Juguerías', tag: 'shop=juice', search: 'juguerías juice' },
+                { emoji: '🏢', group: 'Servicios A Empresas', label: 'Agencias de marketing', tag: 'office=marketing', search: 'agencias de marketing marketing' },
+                { emoji: '🏢', group: 'Servicios A Empresas', label: 'Agencias de empleo', tag: 'office=recruitment', search: 'agencias de empleo recruitment' },
+                { emoji: '🏢', group: 'Servicios A Empresas', label: 'Empresas de seguridad', tag: 'office=security', search: 'empresas de seguridad security' },
+                { emoji: '🏢', group: 'Servicios A Empresas', label: 'Empresas de limpieza', tag: 'office=cleaning', search: 'empresas de limpieza cleaning company' },
+                { emoji: '🏢', group: 'Servicios A Empresas', label: 'Coworkings', tag: 'office=coworking', search: 'coworkings coworking' },
+                { emoji: '🏢', group: 'Servicios A Empresas', label: 'Centros de negocios', tag: 'office=business_center', search: 'centros de negocios business center' },
+                { emoji: '🏢', group: 'Servicios A Empresas', label: 'Servicios informáticos', tag: 'office=it', search: 'servicios informáticos it services' },
+                { emoji: '🏢', group: 'Servicios A Empresas', label: 'Telecomunicaciones', tag: 'office=telecom', search: 'telecomunicaciones telecom' },
+                { emoji: '🏢', group: 'Servicios A Empresas', label: 'Servicios de impresión', tag: 'office=printing', search: 'servicios de impresión printing services' },
+                { emoji: '🛠️', group: 'Construcción y Mantenimiento', label: 'Constructoras', tag: 'shop=construction', search: 'constructoras construction' },
+                { emoji: '🛠️', group: 'Construcción y Mantenimiento', label: 'Electricistas', tag: 'shop=electrician', search: 'electricistas electrician' },
+                { emoji: '🛠️', group: 'Construcción y Mantenimiento', label: 'Fontaneros', tag: 'shop=plumber', search: 'fontaneros plumber' },
+                { emoji: '🛠️', group: 'Construcción y Mantenimiento', label: 'Carpinterías', tag: 'shop=carpenter', search: 'carpinterías carpenter' },
+                { emoji: '🛠️', group: 'Construcción y Mantenimiento', label: 'Pintores', tag: 'shop=painter', search: 'pintores painter' },
+                { emoji: '🛠️', group: 'Construcción y Mantenimiento', label: 'Cerrajeros', tag: 'shop=locksmith', search: 'cerrajeros locksmith' },
+                { emoji: '🛠️', group: 'Construcción y Mantenimiento', label: 'Ferreterías', tag: 'shop=hardware', search: 'ferreterías hardware' },
+                { emoji: '🛠️', group: 'Construcción y Mantenimiento', label: 'Azulejos y cerámica', tag: 'shop=tiles', search: 'azulejos y cerámica tiles' },
+                { emoji: '🛠️', group: 'Construcción y Mantenimiento', label: 'Suelos y pavimentos', tag: 'shop=flooring', search: 'suelos y pavimentos flooring' },
+                { emoji: '🛠️', group: 'Construcción y Mantenimiento', label: 'Ventanas y cerramientos', tag: 'shop=windows', search: 'ventanas y cerramientos windows' },
+                { emoji: '🛠️', group: 'Construcción y Mantenimiento', label: 'Puertas', tag: 'shop=doors', search: 'puertas doors' },
+                { emoji: '🛠️', group: 'Construcción y Mantenimiento', label: 'Cristalerías', tag: 'shop=glass', search: 'cristalerías glass' },
+                { emoji: '🛠️', group: 'Construcción y Mantenimiento', label: 'Techos y cubiertas', tag: 'shop=roofing', search: 'techos y cubiertas roofing' },
+                { emoji: '🛠️', group: 'Construcción y Mantenimiento', label: 'Jardinería y paisajismo', tag: 'shop=landscaping', search: 'jardinería y paisajismo landscaping' },
+                { emoji: '🛠️', group: 'Construcción y Mantenimiento', label: 'Piscinas y mantenimiento', tag: 'shop=pool', search: 'piscinas y mantenimiento pool' },
+                { emoji: '🛠️', group: 'Construcción y Mantenimiento', label: 'Control de plagas', tag: 'shop=pest_control', search: 'control de plagas pest control' },
+                { emoji: '🛠️', group: 'Construcción y Mantenimiento', label: 'Servicios de limpieza', tag: 'shop=cleaning', search: 'servicios de limpieza cleaning' },
+                { emoji: '🚗', group: 'Vehículos y Transporte', label: 'Talleres mecánicos', tag: 'shop=mechanic', search: 'talleres mecánicos mechanic' },
+                { emoji: '🚗', group: 'Vehículos y Transporte', label: 'Lavaderos de coches', tag: 'amenity=car_wash', search: 'lavaderos de coches car wash' },
+                { emoji: '🚗', group: 'Vehículos y Transporte', label: 'Concesionarios', tag: 'shop=car_dealer', search: 'concesionarios car dealer' },
+                { emoji: '🚗', group: 'Vehículos y Transporte', label: 'Tiendas de bicicletas', tag: 'shop=bicycle', search: 'tiendas de bicicletas bicycle shop' },
+                { emoji: '🚗', group: 'Vehículos y Transporte', label: 'Talleres de motos', tag: 'shop=motorbike', search: 'talleres de motos motorbike' },
+                { emoji: '🚗', group: 'Vehículos y Transporte', label: 'Neumáticos', tag: 'shop=tyres', search: 'neumáticos tyres' },
+                { emoji: '🚗', group: 'Vehículos y Transporte', label: 'Recambios de coche', tag: 'shop=car_parts', search: 'recambios de coche car parts' },
+                { emoji: '🚗', group: 'Vehículos y Transporte', label: 'Reparación de coches', tag: 'shop=car_repair', search: 'reparación de coches car repair' },
+                { emoji: '🚗', group: 'Vehículos y Transporte', label: 'Alquiler de coches', tag: 'shop=car_rental', search: 'alquiler de coches car rental' },
+                { emoji: '🚗', group: 'Vehículos y Transporte', label: 'Parkings', tag: 'amenity=parking', search: 'parkings parking' },
+                { emoji: '🚗', group: 'Vehículos y Transporte', label: 'Gasolineras', tag: 'amenity=fuel', search: 'gasolineras petrol' },
+                { emoji: '🚗', group: 'Vehículos y Transporte', label: 'Puntos de carga eléctrica', tag: 'amenity=charging_station', search: 'puntos de carga eléctrica charging station' },
+                { emoji: '📚', group: 'Educación y Formación', label: 'Colegios', tag: 'amenity=school', search: 'colegios school' },
+                { emoji: '📚', group: 'Educación y Formación', label: 'Academias', tag: 'amenity=college', search: 'academias college' },
+                { emoji: '📚', group: 'Educación y Formación', label: 'Autoescuelas', tag: 'amenity=driving_school', search: 'autoescuelas driving school' },
+                { emoji: '📚', group: 'Educación y Formación', label: 'Guarderías', tag: 'amenity=kindergarten', search: 'guarderías kindergarten' },
+                { emoji: '📚', group: 'Educación y Formación', label: 'Universidades', tag: 'amenity=university', search: 'universidades university' },
+                { emoji: '📚', group: 'Educación y Formación', label: 'Escuelas de música', tag: 'amenity=music_school', search: 'escuelas de música music school' },
+                { emoji: '📚', group: 'Educación y Formación', label: 'Academias de idiomas', tag: 'amenity=language_school', search: 'academias de idiomas language school' },
+                { emoji: '📚', group: 'Educación y Formación', label: 'Escuelas de arte', tag: 'amenity=art_school', search: 'escuelas de arte art school' },
+                { emoji: '📚', group: 'Educación y Formación', label: 'Escuelas de danza', tag: 'amenity=dance_school', search: 'escuelas de danza dance school' },
+                { emoji: '📚', group: 'Educación y Formación', label: 'Escuelas de cocina', tag: 'amenity=cooking_school', search: 'escuelas de cocina cooking school' },
+                { emoji: '📚', group: 'Educación y Formación', label: 'Centros de informática', tag: 'amenity=computer_training', search: 'centros de informática computer training' },
+                { emoji: '🎉', group: 'Eventos y Celebraciones', label: 'Floristerías', tag: 'shop=florist', search: 'floristerías florist' },
+                { emoji: '🎉', group: 'Eventos y Celebraciones', label: 'Tiendas de fiestas', tag: 'shop=party', search: 'tiendas de fiestas party' },
+                { emoji: '🎉', group: 'Eventos y Celebraciones', label: 'Catering', tag: 'shop=catering', search: 'catering catering' },
+                { emoji: '🎉', group: 'Eventos y Celebraciones', label: 'Organización de eventos', tag: 'office=event_planner', search: 'organización de eventos event planner' },
+                { emoji: '🎉', group: 'Eventos y Celebraciones', label: 'Organización de bodas', tag: 'office=wedding_planner', search: 'organización de bodas wedding planner' },
+                { emoji: '✂️', group: 'Servicios Personales', label: 'Lavanderías', tag: 'shop=laundry', search: 'lavanderías laundry' },
+                { emoji: '✂️', group: 'Servicios Personales', label: 'Tintorerías', tag: 'shop=dry_cleaning', search: 'tintorerías dry cleaning' },
+                { emoji: '✂️', group: 'Servicios Personales', label: 'Sastrerías', tag: 'shop=tailor', search: 'sastrerías tailor' },
+                { emoji: '✂️', group: 'Servicios Personales', label: 'Zapateros', tag: 'shop=shoemaker', search: 'zapateros shoemaker' },
+                { emoji: '✂️', group: 'Servicios Personales', label: 'Cerrajerías', tag: 'shop=key_cutter', search: 'cerrajerías key cutter' },
+                { emoji: '✂️', group: 'Servicios Personales', label: 'Relojerías', tag: 'shop=watchmaker', search: 'relojerías watchmaker' },
+                { emoji: '✂️', group: 'Servicios Personales', label: 'Joyerías', tag: 'shop=jeweler', search: 'joyerías jeweler' },
+                { emoji: '✂️', group: 'Servicios Personales', label: 'Funerarias', tag: 'shop=funeral_director', search: 'funerarias funeral director' },
+                { emoji: '✂️', group: 'Servicios Personales', label: 'Fotógrafos', tag: 'shop=photographer', search: 'fotógrafos photographer' },
+                { emoji: '✂️', group: 'Servicios Personales', label: 'Imprentas', tag: 'shop=printing', search: 'imprentas printing' },
+                { emoji: '✂️', group: 'Servicios Personales', label: 'Copisterías', tag: 'shop=copy_shop', search: 'copisterías copy shop' },
+                { emoji: '✂️', group: 'Servicios Personales', label: 'Papelerías', tag: 'shop=stationery', search: 'papelerías stationery' },
+                { emoji: '✂️', group: 'Servicios Personales', label: 'Librerías', tag: 'shop=books', search: 'librerías bookstore' },
+                { emoji: '✂️', group: 'Servicios Personales', label: 'Quioscos', tag: 'shop=newsagent', search: 'quioscos newsagent' },
+                { emoji: '✂️', group: 'Servicios Personales', label: 'Estancos', tag: 'shop=tobacco', search: 'estancos tobacco' },
+                { emoji: '✂️', group: 'Servicios Personales', label: 'Administraciones de lotería', tag: 'shop=lottery', search: 'administraciones de lotería lottery' },
+                { emoji: '✂️', group: 'Servicios Personales', label: 'Transferencias de dinero', tag: 'shop=money_transfer', search: 'transferencias de dinero money transfer' },
+                { emoji: '✂️', group: 'Servicios Personales', label: 'Casas de empeño', tag: 'shop=pawnshop', search: 'casas de empeño pawnshop' },
+                { emoji: '🏪', group: 'Comercio Minorista', label: 'Tiendas de ropa', tag: 'shop=clothes', search: 'tiendas de ropa clothes' },
+                { emoji: '🏪', group: 'Comercio Minorista', label: 'Zapaterías', tag: 'shop=shoes', search: 'zapaterías shoes' },
+                { emoji: '🏪', group: 'Comercio Minorista', label: 'Joyerías', tag: 'shop=jewelry', search: 'joyerías jewelry' },
+                { emoji: '🏪', group: 'Comercio Minorista', label: 'Tiendas de regalos', tag: 'shop=gift', search: 'tiendas de regalos gift' },
+                { emoji: '🏪', group: 'Comercio Minorista', label: 'Tiendas de informática', tag: 'shop=computer', search: 'tiendas de informática computer' },
+                { emoji: '🏪', group: 'Comercio Minorista', label: 'Reparación de móviles', tag: 'shop=mobile_phone', search: 'reparación de móviles mobile phone' },
+                { emoji: '🏪', group: 'Comercio Minorista', label: 'Tiendas de mascotas', tag: 'shop=pet', search: 'tiendas de mascotas pet' },
+                { emoji: '🏪', group: 'Comercio Minorista', label: 'Peluquerías caninas', tag: 'shop=pet_grooming', search: 'peluquerías caninas pet grooming' },
+                { emoji: '🏪', group: 'Comercio Minorista', label: 'Tiendas de muebles', tag: 'shop=furniture', search: 'tiendas de muebles furniture' },
+                { emoji: '🏪', group: 'Comercio Minorista', label: 'Electrónicos', tag: 'shop=electronics', search: 'electrónicos electronics' },
+                { emoji: '🏪', group: 'Comercio Minorista', label: 'Grandes almacenes', tag: 'shop=department_store', search: 'grandes almacenes department store' },
+                { emoji: '🏪', group: 'Comercio Minorista', label: 'Tiendas de conveniencia', tag: 'shop=convenience', search: 'tiendas de conveniencia convenience' },
+                { emoji: '🏪', group: 'Comercio Minorista', label: 'Supermercados', tag: 'shop=supermarket', search: 'supermercados supermarket' },
+                { emoji: '🏪', group: 'Comercio Minorista', label: 'Frutas y verduras', tag: 'shop=greengrocer', search: 'frutas y verduras greengrocer' },
+                { emoji: '🏪', group: 'Comercio Minorista', label: 'Carnicerías', tag: 'shop=butcher', search: 'carnicerías butcher' },
+                { emoji: '🏪', group: 'Comercio Minorista', label: 'Pescaderías', tag: 'shop=fishmonger', search: 'pescaderías fishmonger' },
+                { emoji: '🏪', group: 'Comercio Minorista', label: 'Delicatessen', tag: 'shop=delicatessen', search: 'delicatessen delicatessen' },
+                { emoji: '🏪', group: 'Comercio Minorista', label: 'Tiendas ecológicas', tag: 'shop=organic', search: 'tiendas ecológicas organic' },
+                { emoji: '🏪', group: 'Comercio Minorista', label: 'Herbolarios', tag: 'shop=herbalist', search: 'herbolarios herbalist' },
+                { emoji: '🏪', group: 'Comercio Minorista', label: 'Tiendas de delicatessen', tag: 'shop=deli', search: 'tiendas de delicatessen deli' },
+                { emoji: '🎨', group: 'Artesanía y Talleres', label: 'Alfarerías', tag: 'shop=pottery', search: 'alfarerías pottery' },
+                { emoji: '🎨', group: 'Artesanía y Talleres', label: 'Talleres de madera', tag: 'shop=woodworking', search: 'talleres de madera woodworking' },
+                { emoji: '🎨', group: 'Artesanía y Talleres', label: 'Talleres de metal', tag: 'shop=metal_works', search: 'talleres de metal metal works' },
+                { emoji: '🎨', group: 'Artesanía y Talleres', label: 'Talleres de vidrio', tag: 'shop=glassworks', search: 'talleres de vidrio glassworks' },
+                { emoji: '🎨', group: 'Artesanía y Talleres', label: 'Talleres de costura', tag: 'shop=quilting', search: 'talleres de costura quilting' },
+                { emoji: '🎨', group: 'Artesanía y Talleres', label: 'Enmarcaciones', tag: 'shop=framing', search: 'enmarcaciones framing' },
+                { emoji: '🎨', group: 'Artesanía y Talleres', label: 'Estudios de arte', tag: 'office=art_studio', search: 'estudios de arte art studio' },
+                { emoji: '🎭', group: 'Ocio y Entretenimiento', label: 'Cines', tag: 'amenity=cinema', search: 'cines cinema' },
+                { emoji: '🎭', group: 'Ocio y Entretenimiento', label: 'Teatros', tag: 'amenity=theatre', search: 'teatros theatre' },
+                { emoji: '🎭', group: 'Ocio y Entretenimiento', label: 'Museos', tag: 'tourism=museum', search: 'museos museum' },
+                { emoji: '🎭', group: 'Ocio y Entretenimiento', label: 'Bibliotecas', tag: 'amenity=library', search: 'bibliotecas library' },
+                { emoji: '🎭', group: 'Ocio y Entretenimiento', label: 'Parques', tag: 'leisure=park', search: 'parques park' },
+                { emoji: '🎭', group: 'Ocio y Entretenimiento', label: 'Zoos', tag: 'tourism=zoo', search: 'zoos zoo' },
+                { emoji: '🎭', group: 'Ocio y Entretenimiento', label: 'Acuarios', tag: 'tourism=aquarium', search: 'acuarios aquarium' },
+                { emoji: '🎭', group: 'Ocio y Entretenimiento', label: 'Parques de atracciones', tag: 'leisure=amusement', search: 'parques de atracciones amusement' },
+                { emoji: '🎭', group: 'Ocio y Entretenimiento', label: 'Boleras', tag: 'leisure=bowling', search: 'boleras bowling' },
+                { emoji: '🎭', group: 'Ocio y Entretenimiento', label: 'Salas de escape', tag: 'leisure=escape_game', search: 'salas de escape escape game' },
+                { emoji: '🎭', group: 'Ocio y Entretenimiento', label: 'Karaokes', tag: 'amenity=karaoke', search: 'karaokes karaoke' },
+                { emoji: '🎭', group: 'Ocio y Entretenimiento', label: 'Casinos', tag: 'amenity=casino', search: 'casinos casino' },
+                { emoji: '📡', group: 'Medios y Comunicación', label: 'Emisoras de radio', tag: 'office=radio', search: 'emisoras de radio radio' },
+                { emoji: '📡', group: 'Medios y Comunicación', label: 'Estudios de televisión', tag: 'office=tv', search: 'estudios de televisión tv' },
+                { emoji: '📡', group: 'Medios y Comunicación', label: 'Periódicos', tag: 'office=newspaper', search: 'periódicos newspaper' },
+                { emoji: '📡', group: 'Medios y Comunicación', label: 'Agencias de publicidad', tag: 'office=advertising', search: 'agencias de publicidad advertising' },
+            ];
+
+            // ============================================================
+            // FUNCIONES
+            // ============================================================
+            function renderCategories() {
+                const groups = {};
+                CATEGORIES.forEach(cat => {
+                    if (!groups[cat.group]) groups[cat.group] = [];
+                    groups[cat.group].push(cat);
+                });
+
+                let html = '';
+                Object.keys(groups).forEach((groupName, idx) => {
+                    const cats = groups[groupName];
+                    const groupId = `catgrp-${idx}`;
+                    html += `
+                        <div class="cat-group" data-group="${groupId}">
+                            <div class="cat-group-header" data-toggle="${groupId}">
+                                <span class="chevron">▶</span>
+                                <span class="cat-group-title">${cats[0].emoji} ${groupName}
+                                    <span class="cat-group-count" data-count="${groupId}">0/${cats.length}</span>
+                                </span>
+                                <button type="button" class="cat-group-select-all" data-select-all="${groupId}">Seleccionar todo</button>
+                            </div>
+                            <div class="cat-group-body" id="${groupId}">
+                                ${cats.map(cat => `
+                                    <label class="cat-tag" data-search="${cat.search}">
+                                        <input type="checkbox" class="cat-checkbox" data-group="${groupId}" value='["${cat.tag}"]' data-label="${cat.label}" />
+                                        <span class="cat-emoji">${cat.emoji}</span>
+                                        <span class="cat-label">${cat.label}</span>
+                                    </label>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                });
+                categoryContainer.innerHTML = html;
+                updateSelectedCount();
+
+                // Abrir/cerrar grupos
+                categoryContainer.querySelectorAll('.cat-group-header').forEach(header => {
+                    header.addEventListener('click', (e) => {
+                        if (e.target.closest('.cat-group-select-all')) return;
+                        header.closest('.cat-group').classList.toggle('open');
+                    });
+                });
+
+                // Seleccionar todo el grupo
+                categoryContainer.querySelectorAll('.cat-group-select-all').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const groupId = btn.dataset.selectAll;
+                        const boxes = categoryContainer.querySelectorAll(`.cat-checkbox[data-group="${groupId}"]`);
+                        const allChecked = Array.from(boxes).every(b => b.checked);
+                        boxes.forEach(b => {
+                            b.checked = !allChecked;
+                            b.closest('.cat-tag').classList.toggle('active', b.checked);
+                        });
+                        if (Array.from(boxes).some(b => b.checked)) catAllBusinesses.checked = false;
+                        updateGroupCount(groupId);
+                        updateSelectedCount();
+                    });
+                });
+
+                // Event listeners de cada categoría
+                categoryContainer.querySelectorAll('.cat-checkbox').forEach(cb => {
+                    cb.addEventListener('change', function() {
+                        this.closest('.cat-tag').classList.toggle('active', this.checked);
+                        if (this.checked) catAllBusinesses.checked = false;
+                        updateGroupCount(this.dataset.group);
+                        updateSelectedCount();
+                    });
+                });
+
+                Object.keys(groups).forEach((groupName, idx) => updateGroupCount(`catgrp-${idx}`));
+            }
+
+            function updateGroupCount(groupId) {
+                const boxes = categoryContainer.querySelectorAll(`.cat-checkbox[data-group="${groupId}"]`);
+                const checked = Array.from(boxes).filter(b => b.checked).length;
+                const countEl = categoryContainer.querySelector(`[data-count="${groupId}"]`);
+                if (countEl) countEl.textContent = `${checked}/${boxes.length}`;
+            }
+
+            function getSelectedTags() {
+                if (catAllBusinesses.checked) return [];
+                const tags = [];
+                $$('.cat-checkbox:checked').forEach(cb => {
+                    const parsed = JSON.parse(cb.value);
+                    tags.push(parsed[0]);
+                });
+                return tags;
+            }
+
+            function updateSelectedCount() {
+                const count = $$('.cat-checkbox:checked').length;
+                if (catAllBusinesses.checked) {
+                    catSelectedCount.textContent = '🌐 Todos los negocios';
+                } else {
+                    catSelectedCount.textContent = `${count} categoría${count === 1 ? '' : 's'} seleccionada${count === 1 ? '' : 's'}`;
+                }
+            }
+
+            function showToast(message, type = 'info') {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.textContent = message;
+                toastContainer.appendChild(toast);
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateY(10px)';
+                    setTimeout(() => toast.remove(), 300);
+                }, 4000);
+            }
+
+            function updateCities() {
+                const country = countrySelect.value;
+                citySelect.innerHTML = '<option value="">Selecciona una ciudad...</option>';
+                if (country && CITIES_BY_COUNTRY[country]) {
+                    CITIES_BY_COUNTRY[country].forEach(city => {
+                        const option = document.createElement('option');
+                        option.value = city;
+                        option.textContent = city;
+                        citySelect.appendChild(option);
+                    });
+                }
+            }
+
+            function buildLocation() {
+                const city = citySelect.value;
+                const country = countrySelect.value;
+                if (city && country) return `${city}, ${country}`;
+                if (city) return city;
+                if (country) return country;
+                return '';
+            }
+
+            async function callApi(endpoint, options = {}) {
+                const headers = {
+                    'Content-Type': 'application/json',
+                    'X-API-KEY': API_KEY,
+                    ...(options.headers || {})
+                };
+                const response = await fetch(`${API_URL}${endpoint}`, { ...options, headers });
+                if (!response.ok) {
+                    const err = await response.json().catch(() => ({}));
+                    throw new Error(err.detail || `Error ${response.status}`);
+                }
+                return response.json();
+            }
+
+            async function checkHealth() {
+                try {
+                    const res = await fetch(`${API_URL}/health`);
+                    if (res.ok) {
+                        document.getElementById('apiStatus').textContent = 'Operativo';
+                        document.querySelector('.status-dot').style.background = 'var(--green)';
+                    } else {
+                        document.getElementById('apiStatus').textContent = 'Degradado';
+                        document.querySelector('.status-dot').style.background = 'var(--yellow)';
+                    }
+                } catch {
+                    document.getElementById('apiStatus').textContent = 'Offline';
+                    document.querySelector('.status-dot').style.background = 'var(--red)';
+                }
+            }
+
+            function updateStats(items) {
+                if (!items || !items.length) {
+                    ['statTotal', 'statEmails', 'statWhatsapp', 'statWebsites', 'statInstagram', 'statSsl'].forEach(id =>
+                        document.getElementById(id).textContent = '0');
+                    return;
+                }
+                statTotal.textContent = items.length;
+                statEmails.textContent = items.filter(i => i.email).length;
+                statWhatsapp.textContent = items.filter(i => i.whatsapp).length;
+                statWebsites.textContent = items.filter(i => i.website).length;
+                statInstagram.textContent = items.filter(i => i.socials && i.socials.instagram).length;
+                statSsl.textContent = items.filter(i => i.ssl).length;
+            }
+
+            function renderResults(items, jobId) {
+                if (!items || !items.length) {
+                    resultsList.innerHTML = `
+                        <div class="empty-state">
+                            <div class="icon">🔍</div>
+                            <h4>No se encontraron negocios</h4>
+                            <p>Prueba con otra ubicación o categoría</p>
+                        </div>
+                    `;
+                    resultCount.textContent = '';
+                    resultsCard.classList.remove('hidden');
+                    updateStats([]);
+                    return;
+                }
+
+                let html = '';
+                items.forEach(item => {
+                    const title = item.title || 'Sin nombre';
+                    const category = item.category ? `🏷️ ${item.category}` : '';
+                    const address = item.address ? `📍 ${item.address}` : '';
+                    const phone = item.phone ? `<span class="result-phone">📞 ${item.phone}</span>` : '';
+                    const email = item.email ? `<span class="result-email">✉️ ${item.email}</span>` : '';
+                    const signals = item.signals || {};
+                    let pills = '';
+                    ['has_email', 'has_whatsapp', 'has_instagram', 'has_facebook', 'has_linkedin', 'ssl', 'wordpress']
+                    .forEach(k => {
+                        if (signals[k]) {
+                            pills +=
+                                `<span class="signal-pill active">${k.replace('has_', '').replace('_', ' ')}</span>`;
+                        }
+                    });
+
+                    html += `
+                        <div class="result-item fade-in">
+                            <div class="info">
+                                <div class="name">${title}</div>
+                                <div class="details">${category} ${address}</div>
+                                <div class="details">${phone} ${email}</div>
+                                <div class="signals">${pills}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                resultsList.innerHTML = html;
+                resultCount.textContent = `(${items.length} negocios)`;
+                resultsCard.classList.remove('hidden');
+                updateStats(items);
+
+                exportCsvBtn.onclick = () => exportResults(jobId, 'csv');
+                exportXlsxBtn.onclick = () => exportResults(jobId, 'xlsx');
+                exportJsonBtn.onclick = () => exportResults(jobId, 'json');
+            }
+
+            async function exportResults(jobId, format) {
+                try {
+                    const url = `${API_URL}/results/${jobId}?export_format=${format}`;
+                    const response = await fetch(url, { headers: { 'X-API-KEY': API_KEY } });
+                    if (!response.ok) throw new Error('Error en exportación');
+                    const blob = await response.blob();
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(blob);
+                    a.download = `negocios_${jobId}.${format}`;
+                    a.click();
+                    showToast(`✅ Exportado a ${format.toUpperCase()}`, 'success');
+                } catch (e) {
+                    showToast('❌ Error exportando: ' + e.message, 'error');
+                }
+            }
+
+            async function checkStatus() {
+                if (!currentJobId) return;
+                try {
+                    const data = await callApi(`/status/${currentJobId}`);
+                    const status = data.status;
+                    statusBadge.textContent = status.toUpperCase();
+                    statusBadge.className = `status-badge ${status}`;
+
+                    if (status === 'completed') {
+                        clearInterval(statusInterval);
+                        statusInterval = null;
+                        statusMessage.textContent = '✅ ¡Búsqueda completada!';
+                        progressFill.style.width = '100%';
+                        progressLabel.textContent = 'Completado';
+                        progressCount.textContent = `${data.items_count || 0} encontrados`;
+                        searchBtn.disabled = false;
+                        searchBtn.textContent = '🔎 Buscar negocios';
+                        isSearching = false;
+
+                        const results = await callApi(`/results/${currentJobId}`);
+                        renderResults(results.items || [], currentJobId);
+                        loadHistory();
+                        showToast(`✅ Búsqueda completada: ${results.items?.length || 0} negocios`, 'success');
+
+                    } else if (status === 'failed') {
+                        clearInterval(statusInterval);
+                        statusInterval = null;
+                        statusMessage.textContent = `❌ Error: ${data.error_message || 'Error desconocido'}`;
+                        progressFill.style.width = '100%';
+                        progressFill.style.background = 'var(--red)';
+                        searchBtn.disabled = false;
+                        searchBtn.textContent = '🔎 Buscar negocios';
+                        isSearching = false;
+                        showToast('❌ La búsqueda falló', 'error');
+
+                    } else {
+                        statusMessage.textContent = '⏳ Buscando...';
+                        const count = data.items_count || 0;
+                        progressCount.textContent = `${count} encontrados`;
+                        const pct = Math.min(20 + count * 0.5, 90);
+                        progressFill.style.width = `${pct}%`;
+                        progressLabel.textContent = `Procesando... ${count}`;
+                    }
+                } catch (e) {
+                    console.error('Status error:', e);
+                }
+            }
+
+            async function loadHistory() {
+                try {
+                    const data = await callApi('/jobs?limit=20');
+                    if (!data.jobs || !data.jobs.length) {
+                        historyList.innerHTML = `
+                            <div class="empty-state">
+                                <div class="icon">📭</div>
+                                <h4>No hay búsquedas</h4>
+                                <p>Las búsquedas aparecerán aquí</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    let html = '';
+                    data.jobs.forEach(job => {
+                        const statusClass = job.status;
+                        const mode = job.mode.toUpperCase();
+                        const location = job.area || 'Sin ubicación';
+                        const items = job.items_count || 0;
+                        const date = job.created_at ? new Date(job.created_at).toLocaleString() : '';
+
+                        html += `
+                            <div class="history-item" data-job-id="${job.id}">
+                                <div class="left">
+                                    <span class="mode">${mode}</span>
+                                    <span class="location">📍 ${location}</span>
+                                    <span class="badge-count">${items} negocios</span>
+                                    <span class="status-badge ${statusClass}">${job.status}</span>
+                                </div>
+                                <div class="right">
+                                    <span class="meta">${date}</span>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    historyList.innerHTML = html;
+
+                    document.querySelectorAll('.history-item').forEach(el => {
+                        el.addEventListener('click', async function() {
+                            const id = this.dataset.jobId;
+                            try {
+                                const results = await callApi(`/results/${id}`);
+                                renderResults(results.items || [], id);
+                                showToast(`📊 Mostrando resultados de ${id.slice(0,8)}`, 'info');
+                            } catch (e) {
+                                showToast('❌ Error cargando resultados', 'error');
+                            }
+                        });
+                    });
+
+                } catch (e) {
+                    console.error('History error:', e);
+                    historyList.innerHTML = `
+                        <div class="empty-state">
+                            <div class="icon">⚠️</div>
+                            <h4>Error cargando historial</h4>
+                            <p>${e.message}</p>
+                        </div>
+                    `;
+                }
+            }
+
+            // ============================================================
+            // EVENT LISTENERS
+            // ============================================================
+            countrySelect.addEventListener('change', updateCities);
+
+            catAllBusinesses.addEventListener('change', function() {
+                if (this.checked) {
+                    $$('.cat-checkbox:checked').forEach(cb => {
+                        cb.checked = false;
+                        cb.closest('.cat-tag').classList.remove('active');
+                    });
+                    $$('.cat-group').forEach(g => updateGroupCount(g.dataset.group));
+                }
+                updateSelectedCount();
+            });
+
+            catClearBtn.addEventListener('click', function() {
+                $$('.cat-checkbox:checked').forEach(cb => {
+                    cb.checked = false;
+                    cb.closest('.cat-tag').classList.remove('active');
+                });
+                $$('.cat-group').forEach(g => updateGroupCount(g.dataset.group));
+                catAllBusinesses.checked = false;
+                updateSelectedCount();
+            });
+
+            categorySearch.addEventListener('input', function() {
+                const query = this.value.trim().toLowerCase();
+                $$('.cat-group').forEach(group => {
+                    let anyVisible = false;
+                    group.querySelectorAll('.cat-tag').forEach(tag => {
+                        const matches = !query || tag.dataset.search.includes(query);
+                        tag.style.display = matches ? 'inline-flex' : 'none';
+                        if (matches) anyVisible = true;
+                    });
+                    group.style.display = anyVisible ? '' : 'none';
+                    group.classList.toggle('open', query.length > 0 && anyVisible);
+                });
+            });
+
+            searchForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                if (isSearching) return;
+
+                const location = buildLocation();
+                if (!location) {
+                    showToast('⚠️ Selecciona un país y una ciudad', 'error');
+                    return;
+                }
+
+                const tags = getSelectedTags();
+                if (tags.length === 0 && !catAllBusinesses.checked) {
+                    showToast('⚠️ Selecciona al menos una categoría, o marca "Todos los negocios"', 'error');
+                    return;
+                }
+
+                isSearching = true;
+                searchBtn.disabled = true;
+                searchBtn.textContent = '🔄 Buscando...';
+
+                statusCard.classList.remove('hidden');
+                resultsCard.classList.add('hidden');
+                statusMessage.textContent = `⏳ Buscando en ${location}...`;
+                statusBadge.textContent = 'Buscando';
+                statusBadge.className = 'status-badge running';
+                jobIdDisplay.textContent = '';
+                progressFill.style.width = '10%';
+                progressFill.style.background = 'linear-gradient(90deg, #d4d4d4, #ffffff)';
+                progressLabel.textContent = 'Iniciando...';
+                progressCount.textContent = '0 encontrados';
+
+                try {
+                    const result = await callApi('/scrape/osm', {
+                        method: 'POST',
+                        body: JSON.stringify({ area: location, tags })
+                    });
+
+                    currentJobId = result.job_id;
+                    jobIdDisplay.textContent = `ID: ${currentJobId}`;
+                    statusMessage.textContent = '⏳ Procesando...';
+                    progressFill.style.width = '25%';
+
+                    if (statusInterval) clearInterval(statusInterval);
+                    statusInterval = setInterval(checkStatus, 3000);
+                    await checkStatus();
+
+                } catch (e) {
+                    showToast('❌ Error: ' + e.message, 'error');
+                    statusMessage.textContent = `❌ Error: ${e.message}`;
+                    searchBtn.disabled = false;
+                    searchBtn.textContent = '🔎 Buscar negocios';
+                    isSearching = false;
+                }
+            });
+
+            refreshStatusBtn.addEventListener('click', checkStatus);
+            refreshHistoryBtn.addEventListener('click', loadHistory);
+            refreshBtn.addEventListener('click', () => {
+                checkHealth();
+                loadHistory();
+                showToast('🔄 Actualizado', 'info');
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && e.target === citySelect) {
+                    searchForm.dispatchEvent(new Event('submit'));
+                }
+                if (e.key === 'r' && (e.ctrlKey || e.metaKey)) {
+                    e.preventDefault();
+                    refreshBtn.click();
+                }
+            });
+
+            // ============================================================
+            // INIT
+            // ============================================================
+            async function init() {
+                // 🔥 Verificar y forzar la API Key correcta
+                let storedKey = localStorage.getItem('velionix_api_key');
+                if (storedKey === '958b01269dc61cbf8ff6d2b2dfc8dba1' || !storedKey) {
+                    localStorage.setItem('velionix_api_key', DEFAULT_API_KEY);
+                }
+                API_KEY = localStorage.getItem('velionix_api_key');
+                console.log('🔑 API Key cargada en init:', API_KEY);
+
+                renderCategories();
+                await checkHealth();
+                await loadHistory();
+                showToast('🚀 Velionix Data Collector listo', 'info');
+                if (countrySelect.value) updateCities();
+            }
+
+            init();
+
+        })();
+    </script>
+
+</body>
+</html>

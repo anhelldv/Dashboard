@@ -697,18 +697,27 @@
         }
 
         /* ============================================================
-           CATEGORÍAS — AGRUPADAS Y COLAPSABLES
+           CATEGORÍAS — NUEVO DISEÑO MEJORADO
            ============================================================ */
         .category-container {
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            max-height: 360px;
+            gap: 8px;
+            max-height: 400px;
             overflow-y: auto;
-            padding: 10px;
+            padding: 12px;
             background: var(--bg-input);
             border-radius: var(--radius-sm);
             border: 1px solid var(--border-color);
+        }
+
+        .category-container::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .category-container::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 10px;
         }
 
         .cat-group {
@@ -716,28 +725,45 @@
             border-radius: 10px;
             background: var(--bg-card);
             overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .cat-group:hover {
+            border-color: var(--border-light);
         }
 
         .cat-group-header {
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 10px 12px;
+            padding: 10px 14px;
             cursor: pointer;
             user-select: none;
             transition: var(--transition);
+            background: var(--bg-card);
+            border-bottom: 1px solid transparent;
         }
 
-        .cat-group-header:hover { background: var(--bg-card-hover); }
+        .cat-group-header:hover {
+            background: var(--bg-card-hover);
+        }
+
+        .cat-group.open .cat-group-header {
+            border-bottom-color: var(--border-color);
+        }
 
         .cat-group-header .chevron {
             font-size: 11px;
             color: var(--text-muted);
-            transition: transform 0.2s ease;
+            transition: transform 0.25s ease;
             flex-shrink: 0;
+            width: 16px;
+            text-align: center;
         }
 
-        .cat-group.open .cat-group-header .chevron { transform: rotate(90deg); }
+        .cat-group.open .cat-group-header .chevron {
+            transform: rotate(90deg);
+        }
 
         .cat-group-title {
             flex: 1;
@@ -749,10 +775,18 @@
             gap: 8px;
         }
 
+        .cat-group-title .group-emoji {
+            font-size: 15px;
+        }
+
         .cat-group-count {
             font-size: 11px;
             color: var(--text-muted);
             font-weight: 500;
+            background: var(--bg-input);
+            padding: 1px 10px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
         }
 
         .cat-group-select-all {
@@ -761,45 +795,58 @@
             background: none;
             border: none;
             cursor: pointer;
-            padding: 3px 8px;
-            border-radius: 10px;
+            padding: 3px 10px;
+            border-radius: 12px;
+            transition: var(--transition);
             flex-shrink: 0;
         }
 
-        .cat-group-select-all:hover { background: var(--accent-glow); }
+        .cat-group-select-all:hover {
+            background: var(--accent-glow);
+            color: var(--accent-hover);
+        }
 
         .cat-group-body {
             display: none;
             flex-wrap: wrap;
             gap: 6px;
-            padding: 4px 12px 12px;
+            padding: 10px 14px 14px;
         }
 
-        .cat-group.open .cat-group-body { display: flex; }
+        .cat-group.open .cat-group-body {
+            display: flex;
+        }
 
         .cat-tag {
             display: inline-flex;
             align-items: center;
-            gap: 4px;
-            padding: 4px 10px;
+            gap: 5px;
+            padding: 5px 12px 5px 10px;
             background: var(--bg-input);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 20px;
             font-size: 12px;
             color: var(--text-secondary);
             cursor: pointer;
             transition: var(--transition);
             user-select: none;
+            position: relative;
         }
 
         .cat-tag:hover {
             border-color: var(--border-light);
             color: var(--text-primary);
+            transform: translateY(-1px);
         }
 
         .cat-tag.active {
-            background: var(--accent-glow);
-            border-color: var(--accent);
+            background: rgba(52, 211, 153, 0.12);
+            border-color: var(--green);
+            color: var(--text-primary);
+            box-shadow: 0 0 20px rgba(52, 211, 153, 0.05);
+        }
+
+        .cat-tag.active .cat-label {
             color: var(--text-primary);
         }
 
@@ -809,27 +856,44 @@
 
         .cat-tag .cat-emoji {
             font-size: 14px;
+            line-height: 1;
         }
 
         .cat-tag .cat-label {
             font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: var(--transition);
         }
 
-        .cat-tag .cat-count {
+        .cat-tag .cat-count-badge {
             font-size: 10px;
             color: var(--text-muted);
+            background: var(--bg-card);
+            padding: 0 6px;
+            border-radius: 10px;
             margin-left: 2px;
         }
 
+        .cat-tag.active .cat-count-badge {
+            background: rgba(52, 211, 153, 0.1);
+            color: var(--green);
+        }
+
         .category-search {
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+        }
+
+        .category-search:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
         }
 
         .category-toolbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             gap: 10px;
             flex-wrap: wrap;
         }
@@ -837,6 +901,11 @@
         .category-toolbar .cat-info {
             font-size: 12px;
             color: var(--text-muted);
+            font-weight: 500;
+            padding: 4px 12px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
         }
 
         .category-toolbar .cat-actions {
@@ -847,17 +916,17 @@
         .category-toolbar .cat-actions button {
             background: none;
             border: none;
-            color: var(--accent);
+            color: var(--text-muted);
             font-size: 12px;
             cursor: pointer;
-            padding: 2px 8px;
+            padding: 4px 10px;
             border-radius: 12px;
             transition: var(--transition);
         }
 
         .category-toolbar .cat-actions button:hover {
             background: var(--bg-card);
-            color: var(--accent-hover);
+            color: var(--text-primary);
         }
 
         .category-toolbar .cat-all-toggle {
@@ -867,10 +936,49 @@
             font-size: 12px;
             color: var(--text-secondary);
             cursor: pointer;
+            padding: 4px 10px;
+            border-radius: 12px;
+            transition: var(--transition);
+        }
+
+        .category-toolbar .cat-all-toggle:hover {
+            background: var(--bg-card);
         }
 
         .category-toolbar .cat-all-toggle input[type="checkbox"] {
             accent-color: var(--accent);
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        /* Indicador visual de grupo abierto */
+        .cat-group .cat-group-body .cat-tag:last-child {
+            margin-right: 0;
+        }
+
+        @media (max-width: 600px) {
+            .cat-tag {
+                padding: 4px 10px 4px 8px;
+                font-size: 11px;
+            }
+            .cat-tag .cat-emoji {
+                font-size: 12px;
+            }
+            .cat-tag .cat-label {
+                font-size: 11px;
+            }
+            .category-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 6px;
+            }
+            .category-toolbar .cat-all-toggle {
+                justify-content: center;
+            }
+            .category-toolbar .cat-info {
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -1238,7 +1346,7 @@
             };
 
             // ============================================================
-            // CATEGORÍAS (OPCIÓN 3 - COMPACTAS)
+            // CATEGORÍAS (AGRUPADAS Y COMPACTAS)
             // ============================================================
             const CATEGORIES = [
                 { emoji: '🏥', group: 'Salud y Bienestar', label: 'Dentistas', tag: 'amenity=dentist', search: 'dentistas dentist' },
@@ -1441,11 +1549,14 @@
                 Object.keys(groups).forEach((groupName, idx) => {
                     const cats = groups[groupName];
                     const groupId = `catgrp-${idx}`;
+                    const groupEmoji = cats[0]?.emoji || '📌';
                     html += `
                         <div class="cat-group" data-group="${groupId}">
                             <div class="cat-group-header" data-toggle="${groupId}">
                                 <span class="chevron">▶</span>
-                                <span class="cat-group-title">${cats[0].emoji} ${groupName}
+                                <span class="cat-group-title">
+                                    <span class="group-emoji">${groupEmoji}</span>
+                                    ${groupName}
                                     <span class="cat-group-count" data-count="${groupId}">0/${cats.length}</span>
                                 </span>
                                 <button type="button" class="cat-group-select-all" data-select-all="${groupId}">Seleccionar todo</button>
@@ -1498,6 +1609,9 @@
                         updateSelectedCount();
                     });
                 });
+
+                // Abrir todos los grupos por defecto
+                document.querySelectorAll('.cat-group').forEach(g => g.classList.add('open'));
 
                 Object.keys(groups).forEach((groupName, idx) => updateGroupCount(`catgrp-${idx}`));
             }
